@@ -163,4 +163,6 @@ cython_debug/
 .vscode/
 
 # Data folder
-data/
+05_data
+
+
