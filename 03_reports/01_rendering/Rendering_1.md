@@ -101,7 +101,7 @@ No.
 - **Graph 3:** Shows data count by plant type grouped by disease. Data appears generally balanced across all 38 classes.
 - **Graph 4:** Displays extracted perceptual brightness with thresholds for identifying images that are too bright or too dark.
 - **Graph 5:** Vizulises the size of the pictures.
-![!\[alt text\](image.png)](Viz_5.png)
+
 **Present the statistical analyses used:**
 
 None applied, due to the nature of the data.
