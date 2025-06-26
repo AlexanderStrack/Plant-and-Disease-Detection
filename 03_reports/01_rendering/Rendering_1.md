@@ -111,3 +111,8 @@ No.
 **Present the statistical analyses used:**
 
 None applied, due to the nature of the data.
+
+
+## Conclusions
+
+The dataset provides a solid foundation for working with image data. The first phase of modeling will predict plant type. The second phase will classify disease type.
