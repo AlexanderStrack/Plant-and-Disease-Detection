@@ -97,11 +97,16 @@ No.
 **Describe the distribution, outliers, etc., pre/post-processing:**
 
 - **Graph 1:** Shows 14 different plant types. Tomato has the most images, likely due to its many disease categories.
+![alt text](../02_figures/Viz_1.png)
 - **Graph 2:** Shows the number of diseased vs. healthy images per plant. Some diseases are overrepresented.
+![alt text](../02_figures/Viz_2.png)
 - **Graph 3:** Shows data count by plant type grouped by disease. Data appears generally balanced across all 38 classes.
+![alt text](../02_figures/Viz_3.png)
 - **Graph 4:** Displays extracted perceptual brightness with thresholds for identifying images that are too bright or too dark.
+![alt text](../02_figures/Viz_4.png)
 - **Graph 5:** Vizulises the size of the pictures.
-![alt text](image-1.png)
+![alt text](../02_figures/Viz_5.png)
+
 
 **Present the statistical analyses used:**
 
