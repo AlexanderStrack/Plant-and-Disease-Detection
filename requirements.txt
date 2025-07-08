@@ -18,6 +18,7 @@ openpyxl==3.1.2
 torch==2.1.2
 torchvision==0.16.2
 tensorflow==2.19.0
+xgboost>=1.7.4
 
 
 # Image Processing & Augmentation
@@ -32,10 +33,7 @@ tqdm>=4.65.0
 pyyaml>=6.0
 
 # Visualization & Notebooks
-jupyter==1.0.0
 notebook==6.5.4
-jupyterlab==4.0.4
-ipykernel==6.25.0
 
 # Model Export
 onnx==1.15.0
