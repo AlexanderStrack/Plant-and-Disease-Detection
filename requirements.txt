@@ -34,6 +34,8 @@ pyyaml>=6.0
 
 # Visualization & Notebooks
 notebook==6.5.4
+streamlit>=1.28.0
+shap>=0.44.0
 
 # Model Export
 onnx==1.15.0
