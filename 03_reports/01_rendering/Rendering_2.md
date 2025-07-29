@@ -19,7 +19,7 @@ Loss quantifies the discrepancy between the actual values and those predicted by
 
 - **Graph 2:** 
 Model Perfomance of the second training phase with partly unfreezed weights 
-![alt text](../02_figures/Viz_7.png)
+![alt text](03_reports/02_figures/Viz_7.png)
 
 **Did you use other qualitative or quantitative performance metrics? If yes, detail it.**  
 Gradcam and Shap
