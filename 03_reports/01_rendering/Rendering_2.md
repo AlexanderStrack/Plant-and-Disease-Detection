@@ -28,10 +28,10 @@ Gradcam and Shap
 -SHAP (SHapley Additive exPlanations) is a method for explaining individual predictions of any machine learning model by assigning each feature an importance value. It shows how much each feature contributes to pushing the prediction higher or lower.
 
 - **Graph 3:** 
-![alt text](../02_figures/Viz_9.png)
+![alt text](../02_figures/viz_9.png)
 
 - **Graph 4:** 
-![alt text](../02_figures/Viz_10.png)
+![alt text](../02_figures/viz_10.png)
 
 
 ## Model Choice and Optimization
@@ -43,7 +43,7 @@ Convolutional Neural Network (CNN), classical ML-algorithms as a classification 
 The selected model is a MobileNetV2 architecture, pre-trained on the ImageNet dataset, which is then fine-tuned for the specific task of plant disease classification.
 
 - **Graph 5:** 
-![alt text](../02_figures/Viz_8.png)
+![alt text](../02_figures/viz_8.png)
 
 
 **Did you use parameter optimization techniques such as Grid Search and Cross Validation?**  
