@@ -1,0 +1,13 @@
+{
+    "date": "2025_07_29",
+    "data_subpath": "05_data",
+    "notebooks_subpath": "01_notebooks/02_preprossing",
+    "excel_analysis_file": "computed_data/plant_disease_dataset_analysis.xlsx",
+    "train_dataset_folder": "original_data/2.1.1 New Plant Diseases/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)/train",
+    "valid_dataset_folder": "original_data/2.1.1 New Plant Diseases/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)/valid",
+    "model_folder": "Model",
+    "model_name": "model_{date}.keras",
+    "history_name": "model_history_{date}.json",
+    "layers_name": "first_model_layers.json"
+  }
+  
