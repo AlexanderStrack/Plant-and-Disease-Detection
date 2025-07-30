@@ -11,6 +11,7 @@ st.write("### Presentation of data")
 
 train, valid = utils.load_images()
 
+
 def clean_label(label):
     label = re.sub(r"_\([^)]*\)", "", label)
     label = re.sub(r",_bell", "", label)
