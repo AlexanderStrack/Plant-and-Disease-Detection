@@ -1,85 +1,16 @@
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
-from datetime import date
 import tensorflow as tf
-#from tensorflow import keras
-from keras.utils import image_dataset_from_directory
-import itertools
-import streamlit as st
-import pickle
 import matplotlib.cm as cm
-import json
-from tensorflow.keras.models import load_model
-import os
 
-#------------------------------------------------------
-#Load the dataset
-
-#DATE= date.today().strftime("%Y_%m_%d")
-DATASET_PATH_train = r"C:\Users\Alex\Documents\GitHub\may25_bds_plants\05_data\original_data\New Plant Diseases Dataset\New Plant Diseases Dataset\train"
-
-DATASET_PATH_valid = r"C:\Users\Alex\Documents\GitHub\may25_bds_plants\05_data\original_data\New Plant Diseases Dataset\New Plant Diseases Dataset\valid"
-IMAGE_SIZE = (128,128, 3)  # (height, width, channels)
-vector_size_1D = IMAGE_SIZE[0] * IMAGE_SIZE[1] * IMAGE_SIZE[2]  # Flattened size for each image
-batch_size = 64
-
-train = image_dataset_from_directory(
-    DATASET_PATH_train,  # Path to the dataset
-    labels='inferred',  # Automatically infer labels from subdirectory names
-    #label_mode='categorical',  # Use categorical labels
-    image_size=IMAGE_SIZE[:2],  # Resize images to the specified size
-    batch_size=batch_size,  # Number of images per batch
-    seed=42,  # Random seed for reproducibility
-    )
-
-valid = image_dataset_from_directory(
-    DATASET_PATH_valid,  # Path to the dataset
-    labels='inferred',  # Automatically infer labels from subdirectory names
-    #label_mode='categorical',  # Use categorical labels
-    image_size=IMAGE_SIZE[:2],  # Resize images to the specified size
-    batch_size=batch_size,  # Number of images per batch
-    seed=42,  # Random seed for reproducibility
-    )
-
-class_names = train.class_names #Saves all class names in a list 
-classes_healthy = [class_name for class_name in train.class_names if "healthy" in class_name.lower()]
-classes_sick = [class_name for class_name in train.class_names if "healthy" not in class_name.lower()]
-
-
-dataset = train #Choose the dataset to work with, e.g., train, valid, test_healthy, test_sick
-dataset_valid = valid #Choose the dataset to work with, e.g., train, valid, test_healthy, test_sick
-
-# Configuration for performance optimization
-# This is used to optimize the performance of data loading and preprocessing
-AUTOTUNE = tf.data.AUTOTUNE
-# Apply performance optimizations to the datasets
-dataset = dataset.shuffle(1000).cache().prefetch(buffer_size=AUTOTUNE)
-dataset_valid = dataset_valid.shuffle(1000).cache().prefetch(buffer_size=AUTOTUNE)
-
-#------------------------------------------------------
-# To load the model
-BASE_DIR = r"C:\Users\Alex\Documents\GitHub\may25_bds_plants"
-MODEL_DIR = os.path.join(BASE_DIR, "05_data", "Model")
-NOTEBOOK_DIR = os.path.join(BASE_DIR, "01_notebooks", "02_preprossing")
-DATE = "2025_07_29"
-
-MODEL_PATH = os.path.join(MODEL_DIR, f"model_{DATE}.keras")
-HISTORY_PATH = os.path.join(NOTEBOOK_DIR, f"model_history_{DATE}.json")
-LAYER_PATH = os.path.join(NOTEBOOK_DIR, "first_model_layers.json")
-
-with open(LAYER_PATH, "r") as f:
-    layers = json.load(f)
-model = load_model(MODEL_PATH)
-#------------------------------------------------------
-# To calculate predictions and labels from the model
+# This file now only contains functions and does not load any data by itself.
 
 def get_predictions_and_labels(model, dataset):
     """
-    Runs inference on the dataset and collects predictions, true labels, and images.
+    Runs inference on the dataset and collects predictions and true labels.
     """
     true_labels = []
     pred_labels = []
@@ -96,7 +27,7 @@ def generate_classification_report(y_true, y_pred):
     """
     Returns classification report as dictionary.
     """
-    return classification_report(y_true, y_pred, output_dict=True)
+    return classification_report(y_true, y_pred, output_dict=True, zero_division=0)
 
 
 def plot_confusion_matrix(y_true, y_pred, class_names=None):
@@ -121,10 +52,10 @@ def get_misclassified_images(images, y_true, y_pred):
     return y_true[misclassified_indices], y_pred[misclassified_indices]
 
 
-#------------------------------------------------------
-# To plot Grad-CAM
-
 def grad_cam(model, image, layer_name):
+    """
+    Creates a Grad-CAM heatmap for a given image.
+    """
     grad_model = tf.keras.models.Model(
         [model.inputs], [model.get_layer(layer_name).output, model.output]
     )
@@ -142,19 +73,20 @@ def grad_cam(model, image, layer_name):
     heatmap = tf.reduce_sum(pooled_grads * conv_outputs, axis=-1)
     heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
 
-    # Resize and overlay
     heatmap = tf.image.resize(heatmap[..., tf.newaxis], (image.shape[0], image.shape[1])).numpy()
     heatmap = np.squeeze(heatmap)
     heatmap_color = cm.jet(heatmap)[..., :3]
-    overlay = heatmap_color * 0.4 + image / 255.0
+    overlay = heatmap_color * 0.4 + (image.astype("float32") / 255.0)
     return np.clip(overlay, 0, 1), class_idx.numpy()
 
 def get_sample_images(dataset, num_samples=4):
+    """
+    Gets a few sample images and labels from a dataset.
+    """
     images, labels = [], []
-    for batch_images, batch_labels in dataset:
+    for batch_images, batch_labels in dataset.take(1):
         for img, label in zip(batch_images, batch_labels):
-            images.append(img.numpy())
-            labels.append(label.numpy())
-            if len(images) >= num_samples:
-                return np.array(images), np.array(labels)
+            if len(images) < num_samples:
+                images.append(img.numpy())
+                labels.append(label.numpy())
     return np.array(images), np.array(labels)
