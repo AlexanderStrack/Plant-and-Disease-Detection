@@ -21,9 +21,9 @@ st.write(
     "A simple convolutional neural network (CNN) is built to classify "
 )        
 
-model = utils.load_keras_model()
-if not model:
-    st.stop()
+#model = utils.load_keras_model()
+##if not model:
+#    st.stop()
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP", "TensorBoard"])
