@@ -13,7 +13,7 @@ _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 if _SCRIPT_DIR not in sys.path:
     sys.path.append(_SCRIPT_DIR)
 # Define the project root as 3 levels up from the script directory
-_PROJECT_ROOT = os.path.abspath(os.path.join(_SCRIPT_DIR, "../../.."))
+_PROJECT_ROOT = os.path.abspath(os.path.join(_SCRIPT_DIR, "../.."))
 
 
 # --- Configuration Loading ---
