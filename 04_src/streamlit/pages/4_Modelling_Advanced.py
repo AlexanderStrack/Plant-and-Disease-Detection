@@ -150,6 +150,7 @@ with tab6:
     st.code("tensorboard --logdir logs/image")
     st.markdown("[Open TensorBoard in browser](http://localhost:6006)", unsafe_allow_html=True)
 
+
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")
 st.sidebar.info(
