@@ -38,7 +38,8 @@ def get_path(key, config=load_config()):
         'history': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['history_name'].format(date=date)),
         'layers': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['layers_name']),
         'classification_report': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['report_name'].format(date=date)),
-        #'gradcam_images': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['gradcam_images_folder'], config['gradcam_images_name']),
+        'gradcam_images': os.path.join(_PROJECT_ROOT, config['gradcam_images_folder'].format(date=date)),
+
     }
     return paths[key]
 

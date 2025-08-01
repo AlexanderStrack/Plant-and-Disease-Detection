@@ -5,6 +5,9 @@ import json
 import matplotlib.pyplot as plt
 import pickle
 import seaborn as sns
+import glob
+from PIL import Image
+import os
 
 # Corrected Import Order: Import utils first to set up the path
 import utils
@@ -108,41 +111,34 @@ with tab3:
 
 with tab4:
     st.write("Visual explanation of model predictions using Grad-CAM")
-    class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
-    
-    GRADCAM_PATH = utils.get_path('gradcam_images')
 
-    # Finde alle verfügbaren Klassen (einmal aus Dateinamen extrahieren)
-    @st.cache_data
-    def get_class_names():
-        all_files = glob.glob(os.path.join(GRADCAM_PATH, "*.jpg"))
-        class_names = sorted(set(
-            os.path.basename(f).rsplit("_img", 1)[0] for f in all_files
-        ))
-        return class_names
-
-    # Bildpfade für bestimmte Klasse laden
-    def get_images_for_class(class_name):
-        pattern = os.path.join(GRADCAM_PATH, f"{class_name}_img*.jpg")
-        return sorted(glob.glob(pattern))[:2]
+    gradcam_path = os.path.normpath(utils.get_path('gradcam_images'))
+    #gradcam_path = utils.get_path('gradcam_images')
 
     # UI
-    st.title("Beispielhafte Grad-CAM-Ergebnisse")
+    st.title("Example for Grad-CAM-results for the first model")
 
-    available_classes = get_class_names()
-    selected_class = st.selectbox("Wähle eine Pflanzenklasse:", available_classes)
+    available_classes = Code_for_streamlit.get_class_names_from_files(gradcam_path)
+    display_to_raw = Code_for_streamlit.get_class_names_from_files(gradcam_path)
 
-    image_paths = get_images_for_class(selected_class)
-
-    # Anzeige
-    if image_paths:
-        st.subheader(f"Grad-CAM für: {selected_class.replace('___', ' (')})")
-        cols = st.columns(len(image_paths))
-        for i, img_path in enumerate(image_paths):
-            with cols[i]:
-                st.image(Image.open(img_path), caption=f"Beispiel {i+1}", use_column_width=True)
+    if not available_classes:
+        st.warning("No Grad-CAM-Images found.")
     else:
-        st.info("Keine Grad-CAM-Bilder für diese Klasse gefunden.")
+        selected_display_name = st.selectbox("Choose a plant class:", list(display_to_raw.keys()))
+        selected_class = display_to_raw[selected_display_name]
+
+        image_paths = Code_for_streamlit.get_images_for_class(selected_class,gradcam_path)
+
+        # Show images
+        if image_paths:
+            class_nice = selected_class.replace("___", " (").replace("_", " ") + ")"
+            st.subheader(f"Grad-CAM for: {class_nice}")
+            cols = st.columns(len(image_paths))
+            for i, img_path in enumerate(image_paths):
+                with cols[i]:
+                    st.image(Image.open(img_path), caption=f"Example {i+1}", use_column_width=True)
+        else:
+            st.info("No Grad-CAM images found for this class.")
 
 with tab5:
     st.subheader("SHAP Interpretability")
