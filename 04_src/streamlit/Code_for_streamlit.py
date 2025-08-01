@@ -6,6 +6,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 import tensorflow as tf
 import matplotlib.cm as cm
 import re
+import streamlit as st
+import glob
+import os
 
 # This file now only contains functions and does not load any data by itself.
 
@@ -103,3 +106,32 @@ def format_class_name(label):
     plant, disease = label.split("___")
     disease = disease.replace("_", " ")
     return f"{plant} ({disease})"
+
+
+#------------------------------------------------------
+#function for grad-cam images
+
+# Find all available classes (extract once from filename)
+@st.cache_data
+def get_class_names_from_files(gradcam_path):
+    all_files = glob.glob(os.path.join(gradcam_path, "*.jpg"))
+    raw_names = sorted(set(
+        os.path.basename(f).rsplit("_img", 1)[0] for f in all_files
+    ))
+
+    # formate: from "Apple___Apple_scab" → "Apple (Apple scab)"
+    display_to_raw = {}
+    for raw in raw_names:
+        if "___" in raw:
+            plant, disease = raw.split("___")
+            pretty = f"{plant} ({disease.replace('_', ' ')})"
+        else:
+            pretty = raw.replace("_", " ")  # fallback
+        display_to_raw[pretty] = raw
+
+    return display_to_raw  # dict: Display → internal file name
+
+# Load image paths for specific class
+def get_images_for_class(class_name,gradcam_path):
+    pattern = os.path.join(gradcam_path, f"{class_name}_img*.jpg")
+    return sorted(glob.glob(pattern))[:2]
