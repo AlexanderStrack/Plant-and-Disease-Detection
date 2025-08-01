@@ -40,6 +40,7 @@ for i in range(5):
 st.pyplot(fig)
 
 st.subheader("Discover the different plant species")
+
 plant_options = sorted(set(name.split('___')[0].strip() for name in train.class_names))
 plant_select = st.selectbox("Pick a Plant Species", options=plant_options, key='plant_species_checkbox')
 
