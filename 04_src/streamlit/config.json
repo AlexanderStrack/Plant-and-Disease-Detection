@@ -8,6 +8,7 @@
     "model_folder": "models",
     "model_name": "model_{date}.keras",
     "history_name": "model_history_{date}.json",
-    "layers_name": "first_model_layers.json"
+    "layers_name": "first_model_layers.json",
+    "report_name": "first_model_classification_results_{date}.pkl"
   }
   

@@ -5,19 +5,14 @@ import matplotlib.pyplot as plt
 import re
 import textwrap
 import utils
+import Code_for_streamlit
 
 st.header("Data Visualization")
 st.write("### Presentation of data")
 
 train, valid = utils.load_images()
 
-
-def clean_label(label):
-    label = re.sub(r"_\([^)]*\)", "", label)
-    label = re.sub(r",_bell", "", label)
-    return label
-
-class_names = [clean_label(name) for name in train.class_names]
+class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
 train.class_names = [name.replace(' ', '_') for name in class_names]
 
 if train:

@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import json
 import matplotlib.pyplot as plt
+import pickle
 
 # Corrected Import Order: Import utils first to set up the path
 import utils
@@ -21,9 +22,9 @@ st.write(
     "A simple convolutional neural network (CNN) is built to classify "
 )        
 
-#model = utils.load_keras_model()
-##if not model:
-#    st.stop()
+model = utils.load_keras_model()
+if not model:
+    st.stop()
 
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP", "TensorBoard"])
@@ -55,15 +56,39 @@ with tab2:
 
 with tab3:
     st.subheader("Evaluation on Validation Set")
-    y_true, y_pred = Code_for_streamlit.get_predictions_and_labels(model, Code_for_streamlit.dataset_valid)
-    st.subheader("Classification Report")
-    report = Code_for_streamlit.generate_classification_report(y_true, y_pred)
+    classification_report_path = utils.get_path('classification_report')
+    try:
+        with open(classification_report_path, "rb") as f:
+            results = pickle.load(f)
+        report = results['report']
+    except FileNotFoundError:
+        st.error(f"Classification report file not found: `{classification_report_path}`")
+
     df_report = pd.DataFrame(report).transpose()
-    st.dataframe(df_report.style.format(precision=2))
+    st.subheader("Classification Report")
+    st.dataframe(df_report.style.format("{:.2f}"))
+
+    st.subheader("Confusion Matrix")
+    train, valid = utils.load_images()
+
+    class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
+    cm = results['confusion_matrix']
+    
+    fig, ax = plt.subplots(figsize=(10, 8))
+    cax = ax.matshow(cm, cmap='Blues') 
+    plt.colorbar(cax)
+    ax.set_xticklabels([''] + list(class_names), rotation=90)
+    #ax.set_yticklabels([''] + list(results['class_names']))
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    st.pyplot(fig)
+
+
 
 with tab4:
     st.write("Visual explanation of model predictions using Grad-CAM")
-    images, labels = get_sample_images(Code_for_streamlit.dataset_valid, num_samples=4)
+    class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
+    images, labels = get_sample_images(valid, num_samples=4)
     conv_layers = [layer.name for layer in model.layers if isinstance(layer, tf.keras.layers.Conv2D)]
     if conv_layers:
         target_layer = conv_layers[-1]
@@ -71,9 +96,9 @@ with tab4:
             overlay, pred_class = grad_cam(model, image, target_layer)
             col1, col2 = st.columns(2)
             with col1:
-                st.image(image, caption=f"True Label: {Code_for_streamlit.class_names[labels[i]]}", use_column_width=True)
+                st.image(image, caption=f"True Label: {class_names[labels[i]]}", use_column_width=True)
             with col2:
-                st.image(overlay, caption=f"Grad-CAM Prediction: {Code_for_streamlit.class_names[pred_class]}", use_column_width=True)
+                st.image(overlay, caption=f"Grad-CAM Prediction: {class_names[pred_class]}", use_column_width=True)
     else:
         st.warning("No Conv2D layer found in model.")
 

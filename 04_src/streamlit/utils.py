@@ -36,7 +36,8 @@ def get_path(key, config=load_config()):
         'valid': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['valid_dataset_folder']),
         'model': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['model_name'].format(date=date)),
         'history': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['history_name'].format(date=date)),
-        'layers': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['layers_name'])
+        'layers': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['layers_name']),
+        'classification_report': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['report_name'].format(date=date))
     }
     return paths[key]
 

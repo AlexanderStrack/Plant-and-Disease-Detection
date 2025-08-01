@@ -5,6 +5,7 @@ import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix
 import tensorflow as tf
 import matplotlib.cm as cm
+import re
 
 # This file now only contains functions and does not load any data by itself.
 
@@ -90,3 +91,9 @@ def get_sample_images(dataset, num_samples=4):
                 images.append(img.numpy())
                 labels.append(label.numpy())
     return np.array(images), np.array(labels)
+
+
+def clean_label(label):
+    label = re.sub(r"_\([^)]*\)", "", label)
+    label = re.sub(r",_bell", "", label)
+    return label
