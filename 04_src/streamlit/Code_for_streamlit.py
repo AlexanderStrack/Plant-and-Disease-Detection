@@ -97,3 +97,9 @@ def clean_label(label):
     label = re.sub(r"_\([^)]*\)", "", label)
     label = re.sub(r",_bell", "", label)
     return label
+
+# Utility function to format class names for display etc. "Apple___Black_Spot" -> "Apple (Black Spot)"
+def format_class_name(label):
+    plant, disease = label.split("___")
+    disease = disease.replace("_", " ")
+    return f"{plant} ({disease})"
