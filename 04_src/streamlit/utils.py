@@ -39,7 +39,8 @@ def get_path(key, config=load_config()):
         'layers': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['layers_name']),
         'classification_report': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['report_name'].format(date=date)),
         'gradcam_images': os.path.join(_PROJECT_ROOT, config['gradcam_images_folder'].format(date=date)),
-        'shap_images': os.path.join(_PROJECT_ROOT, config['shap_images_folder'].format(date=date))
+        'shap_images': os.path.join(_PROJECT_ROOT, config['shap_images_folder'].format(date=date)),
+        'log_file': os.path.join(_PROJECT_ROOT, config['tensorboard_log'].format(date=date))
 
     }
     return paths[key]

@@ -143,39 +143,39 @@ with tab4:
 with tab5:
     st.subheader("SHAP Interpretability")
 
-    shap_path = utils.get_path('shap_images')  # z. B. "04_src/images_shap/first_model_2025_07_29"
+    shap_path = utils.get_path('shap_images')  # eg.. "04_src/images_shap/first_model_2025_07_29"
 
     all_files = [f for f in os.listdir(shap_path) if f.endswith(".png")]
 
-    # Alle Klassen extrahieren, z. B. Tomato___Early_blight
+    # Extract all classes, e.g., Tomato___Early_blight
     class_names = sorted(
         list(set("_".join(f.split("_")[:-2]) for f in all_files))
     )
 
-    # Mapping: schöner Anzeigename → Dateiname
+    # Mapping: nice display name → file name
     display_to_raw = {
         cname.replace("___", " (").replace("_", " ") + ")": cname
         for cname in class_names
     }
 
     if not class_names:
-        st.warning("Keine SHAP-Bilder gefunden.")
+        st.warning("No SHAP images found.")
     else:
-        selected_display_name = st.selectbox("Wähle eine Pflanzenklasse:", list(display_to_raw.keys()))
+        selected_display_name = st.selectbox("Choose a plant class:", list(display_to_raw.keys()))
         selected_class = display_to_raw[selected_display_name]
 
-        # Hole alle zugehörigen Dateien
+        # Get all associated files
         class_files = sorted([
             f for f in all_files if f.startswith(selected_class)
         ])
 
-        # Gruppiere nach img1, img2, ...
+        # Group by img1, img2, ...
         image_groups = {}
         for f in class_files:
             group_key = f.split("_")[-2]  # z. B. img1, img2
             image_groups.setdefault(group_key, []).append(f)
 
-        # Anzeige
+        # Display
         class_nice = selected_class.replace("___", " (").replace("_", " ") + ")"
         st.subheader(f"SHAP für: {class_nice}")
 
@@ -190,7 +190,7 @@ with tab5:
                 elif "original" in f:
                     original_img = Image.open(path)
 
-            # Anzeigen in nebeneinander liegenden Spalten
+            # Display in adjacent columns
             if original_img:
                 cols[1].image(original_img, caption=f"🖼️ Originalbild {group_id[-1]}", use_column_width=True)
             if overlay_img:
@@ -199,10 +199,27 @@ with tab5:
 
 
 with tab6:
-    st.subheader("TensorBoard")
-    st.markdown("Launch TensorBoard manually using:")
-    st.code("tensorboard --logdir logs/image")
-    st.markdown("[Open TensorBoard in browser](http://localhost:6006)", unsafe_allow_html=True)
+    st.subheader("📊 TensorBoard Integration")
+
+    log_dir = os.path.join("log_file")
+    st.markdown(f"📂 **Log directory:** `{log_dir}`")
+    st.markdown(
+        """
+        TensorBoard is a tool for visualizing training metrics such as loss, accuracy, and model graphs.
+        You need to start it manually in the terminal and open it in your browser:
+        """
+    )
+
+    st.markdown("### 🧭 Start TensorBoard from your terminal:")
+    st.code("tensorboard --logdir logs/image", language="bash")
+
+    st.markdown("### 🌐 Or open it directly in your browser:")
+    st.markdown(
+        '[➡️ Open TensorBoard (http://localhost:6006)](http://localhost:6006)',
+        unsafe_allow_html=True
+    )
+
+    st.info("Make sure TensorBoard is running in the background and that the directory `logs/image` exists.")
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")

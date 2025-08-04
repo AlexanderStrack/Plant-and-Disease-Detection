@@ -13,6 +13,7 @@
     "layers_name": "first_model_layers.json",
     "report_name": "first_model_classification_results_{date}.pkl",
     "gradcam_images_folder": "04_src/images_grad_cam/first_model_{date}",
-    "shap_images_folder": "04_src/images_shap/first_model_{date}"
+    "shap_images_folder": "04_src/images_shap/first_model_{date}",
+    "tensorboard_log": "04_src/tensorboard_log_file/first_model_{date}"
   }
   
