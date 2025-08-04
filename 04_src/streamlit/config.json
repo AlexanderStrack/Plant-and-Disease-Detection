@@ -12,16 +12,6 @@
     "history_name": "model_history_{date}.json",
     "layers_name": "first_model_layers.json",
     "report_name": "first_model_classification_results_{date}.pkl",
-    "gradcam_images_folder": "04_src/images_grad_cam/first_model_{date}", 
-
-    "model_adv_folder": "models/Advanced Model",
-    "model_adv_name": "2025_07_31_plant_classifier_fine_tuned__model.keras",
-    "history_adv_int_phase_name": "2025_07_31_model_history_int_phase.json",
-    "history_adv_fine_tune_name": "2025_07_31_model_history_fine_tune_phase.json",
-    "layers_adv_name": "layers.json",
-    "report_adv_name": "first_model_classification_results_{date}.pkl",
-    "gradcam_adv_images_folder": "04_src/images_grad_cam/first_model_{date}"
-
-
+    "gradcam_images_folder": "04_src/images_grad_cam/first_model_{date}"
   }
   

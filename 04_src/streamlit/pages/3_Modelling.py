@@ -142,7 +142,61 @@ with tab4:
 
 with tab5:
     st.subheader("SHAP Interpretability")
-    
+
+    shap_path = utils.get_path('shap_images')  # z. B. "04_src/images_shap/first_model_2025_07_29"
+
+    all_files = [f for f in os.listdir(shap_path) if f.endswith(".png")]
+
+    # Alle Klassen extrahieren, z. B. Tomato___Early_blight
+    class_names = sorted(
+        list(set("_".join(f.split("_")[:-2]) for f in all_files))
+    )
+
+    # Mapping: schöner Anzeigename → Dateiname
+    display_to_raw = {
+        cname.replace("___", " (").replace("_", " ") + ")": cname
+        for cname in class_names
+    }
+
+    if not class_names:
+        st.warning("Keine SHAP-Bilder gefunden.")
+    else:
+        selected_display_name = st.selectbox("Wähle eine Pflanzenklasse:", list(display_to_raw.keys()))
+        selected_class = display_to_raw[selected_display_name]
+
+        # Hole alle zugehörigen Dateien
+        class_files = sorted([
+            f for f in all_files if f.startswith(selected_class)
+        ])
+
+        # Gruppiere nach img1, img2, ...
+        image_groups = {}
+        for f in class_files:
+            group_key = f.split("_")[-2]  # z. B. img1, img2
+            image_groups.setdefault(group_key, []).append(f)
+
+        # Anzeige
+        class_nice = selected_class.replace("___", " (").replace("_", " ") + ")"
+        st.subheader(f"SHAP für: {class_nice}")
+
+        for group_id, filenames in sorted(image_groups.items()):
+            cols = st.columns(2)
+            overlay_img, original_img = None, None
+
+            for f in filenames:
+                path = os.path.join(shap_path, f)
+                if "overlay" in f:
+                    overlay_img = Image.open(path)
+                elif "original" in f:
+                    original_img = Image.open(path)
+
+            # Anzeigen in nebeneinander liegenden Spalten
+            if original_img:
+                cols[1].image(original_img, caption=f"🖼️ Originalbild {group_id[-1]}", use_column_width=True)
+            if overlay_img:
+                cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
+            
+
 
 with tab6:
     st.subheader("TensorBoard")
