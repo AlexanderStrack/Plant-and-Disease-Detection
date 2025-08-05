@@ -34,13 +34,27 @@ def get_path(key, config=load_config()):
         'excel': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['excel_analysis_file']),
         'train': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['train_dataset_folder']),
         'valid': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['valid_dataset_folder']),
+        # first_model paths
         'model': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['model_name'].format(date=date)),
         'history': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['history_name'].format(date=date)),
         'layers': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['layers_name']),
         'classification_report': os.path.join(_PROJECT_ROOT, config['notebooks_subpath'], config['report_name'].format(date=date)),
+        
         'gradcam_images': os.path.join(_PROJECT_ROOT, config['gradcam_images_folder'].format(date=date)),
         'shap_images': os.path.join(_PROJECT_ROOT, config['shap_images_folder'].format(date=date)),
-        'log_file': os.path.join(_PROJECT_ROOT, config['tensorboard_log'].format(date=date))
+        'log_file': os.path.join(_PROJECT_ROOT, config['tensorboard_log'].format(date=date)),
+
+
+        # advanced model paths
+        'model_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['model_name_adv'].format(date=date)),
+        'history_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'],config['model_folder'], config['history_name_adv'].format(date=date)),
+        'layers_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['layers_name_adv']),
+        'classification_report_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'],config['model_folder'], config['report_name_adv'].format(date=date)),
+        
+        'gradcam_images_adv': os.path.join(_PROJECT_ROOT, config['gradcam_images_folder_adv'].format(date=date)),
+        'shap_images_adv': os.path.join(_PROJECT_ROOT, config['shap_images_folder_adv'].format(date=date)),
+        'log_file_adv': os.path.join(_PROJECT_ROOT, config['tensorboard_log_adv'].format(date=date))
+
 
     }
     return paths[key]
@@ -84,6 +98,17 @@ def load_images():
 def load_keras_model():
     """Loads the pre-trained Keras model."""
     model_path = get_path('model')
+    try:
+        model = load_model(model_path)
+        return model
+    except Exception as e:
+        st.error(f"Error loading model from {model_path}: {e}")
+        return None
+    
+@st.cache_resource(show_spinner="Loading AI Model...")
+def load_keras_model_adv():
+    """Loads the pre-trained Keras model."""
+    model_path = get_path('model_adv')
     try:
         model = load_model(model_path)
         return model
