@@ -29,7 +29,9 @@ col1, col2 = st.columns(2)
 with col1:
     st.markdown("#### Alexander Strack")
     st.write("Data Scientist and Physician")
-
+st.markdown(
+        "[View LinkedIn Profile](www.linkedin.com/in/alexander-strack-b3141234b)"
+    )
 with col2:
     st.markdown("#### Felix Schramm")
     st.write("Data Scientist and Sociologist")

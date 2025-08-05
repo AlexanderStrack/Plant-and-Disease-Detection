@@ -38,7 +38,7 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 
 with tab1:
     st.subheader("Model Layers (Table View)")
-    layer_path = utils.get_path('layers')
+    layer_path = utils.get_path('layers_adv')
     try:
         with open(layer_path, "r") as f:
             layers = json.load(f)
@@ -51,7 +51,7 @@ with tab1:
 
 with tab2:
     st.subheader("Training History")
-    history_path = utils.get_path('history')
+    history_path = utils.get_path('history_adv')
     try:
         with open(history_path, "r") as f:
             history = json.load(f)
@@ -64,7 +64,7 @@ with tab2:
 with tab3:
 
     st.subheader("Evaluation on Validation Set")
-    classification_report_path = utils.get_path('classification_report')
+    classification_report_path = utils.get_path('classification_report_adv')
     try:
         with open(classification_report_path, "rb") as f:
             results = pickle.load(f)
@@ -112,7 +112,7 @@ with tab3:
 with tab4:
     st.write("Visual explanation of model predictions using Grad-CAM")
 
-    gradcam_path = os.path.normpath(utils.get_path('gradcam_images'))
+    gradcam_path = os.path.normpath(utils.get_path('gradcam_images_adv'))  # e.g., "04_src/images_grad_cam/advanced_model_2025_07_29"
     #gradcam_path = utils.get_path('gradcam_images')
 
     # UI
@@ -142,14 +142,84 @@ with tab4:
 
 with tab5:
     st.subheader("SHAP Interpretability")
-    
+
+    shap_path = utils.get_path('shap_images_adv')  # eg.. "04_src/images_shap/first_model_2025_07_29"
+
+    all_files = [f for f in os.listdir(shap_path) if f.endswith(".png")]
+
+    # Extract all classes, e.g., Tomato___Early_blight
+    class_names = sorted(
+        list(set("_".join(f.split("_")[:-2]) for f in all_files))
+    )
+
+    # Mapping: nice display name → file name
+    display_to_raw = {
+        cname.replace("___", " (").replace("_", " ") + ")": cname
+        for cname in class_names
+    }
+
+    if not class_names:
+        st.warning("No SHAP images found.")
+    else:
+        selected_display_name = st.selectbox("Choose a plant class:", list(display_to_raw.keys()))
+        selected_class = display_to_raw[selected_display_name]
+
+        # Get all associated files
+        class_files = sorted([
+            f for f in all_files if f.startswith(selected_class)
+        ])
+
+        # Group by img1, img2, ...
+        image_groups = {}
+        for f in class_files:
+            group_key = f.split("_")[-2]  # z. B. img1, img2
+            image_groups.setdefault(group_key, []).append(f)
+
+        # Display
+        class_nice = selected_class.replace("___", " (").replace("_", " ") + ")"
+        st.subheader(f"SHAP für: {class_nice}")
+
+        for group_id, filenames in sorted(image_groups.items()):
+            cols = st.columns(2)
+            overlay_img, original_img = None, None
+
+            for f in filenames:
+                path = os.path.join(shap_path, f)
+                if "overlay" in f:
+                    overlay_img = Image.open(path)
+                elif "original" in f:
+                    original_img = Image.open(path)
+
+            # Display in adjacent columns
+            if original_img:
+                cols[1].image(original_img, caption=f"🖼️ Originalbild {group_id[-1]}", use_column_width=True)
+            if overlay_img:
+                cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
+            
+
 
 with tab6:
-    st.subheader("TensorBoard")
-    st.markdown("Launch TensorBoard manually using:")
-    st.code("tensorboard --logdir logs/image")
-    st.markdown("[Open TensorBoard in browser](http://localhost:6006)", unsafe_allow_html=True)
+    st.subheader("📊 TensorBoard Integration")
 
+    log_dir = os.path.join("log_file")
+    st.markdown(f"📂 **Log directory:** `{log_dir}`")
+    st.markdown(
+        """
+        TensorBoard is a tool for visualizing training metrics such as loss, accuracy, and model graphs.
+        You need to start it manually in the terminal and open it in your browser:
+        """
+    )
+
+    st.markdown("### 🧭 Start TensorBoard from your terminal:")
+    st.code("tensorboard --logdir logs/image", language="bash")
+
+    st.markdown("### 🌐 Or open it directly in your browser:")
+    st.markdown(
+        '[➡️ Open TensorBoard (http://localhost:6006)](http://localhost:6006)',
+        unsafe_allow_html=True
+    )
+
+    st.info("Make sure TensorBoard is running in the background and that the directory `logs/image` exists.")
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")
