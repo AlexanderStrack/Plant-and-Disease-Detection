@@ -9,6 +9,8 @@ import re
 import streamlit as st
 import glob
 import os
+import subprocess
+import time
 
 # This file now only contains functions and does not load any data by itself.
 
@@ -135,3 +137,4 @@ def get_class_names_from_files(gradcam_path):
 def get_images_for_class(class_name,gradcam_path):
     pattern = os.path.join(gradcam_path, f"{class_name}_img*.jpg")
     return sorted(glob.glob(pattern))[:2]
+

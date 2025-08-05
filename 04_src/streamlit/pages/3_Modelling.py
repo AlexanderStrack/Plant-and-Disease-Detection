@@ -8,17 +8,20 @@ import seaborn as sns
 import glob
 from PIL import Image
 import os
+import subprocess
+import streamlit.components.v1 as components
+import time
+import socket
 
 # Corrected Import Order: Import utils first to set up the path
 import utils
 import Code_for_streamlit
 from Code_for_streamlit import grad_cam, get_sample_images
-
+import streamlit.components.v1 as components
 # Other imports
 import shap
 from tensorflow.keras.layers import Conv2D
 import tensorflow as tf
-
 
 st.header("First Model attempt")
 st.write(
@@ -197,29 +200,54 @@ with tab5:
                 cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
             
 
+# 🔧 Function to start TensorBoard
+def start_tensorboard(log_dir, port=6006):
+    command = [
+        "tensorboard",
+        "--logdir", log_dir,
+        "--port", str(port),
+        "--host", "localhost"
+    ]
+    try:
+        subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(3)  # Give TensorBoard time to start
+        st.success(f"✅ TensorBoard started at http://localhost:{port}")
+    except Exception as e:
+        st.error(f"❌ Failed to start TensorBoard: {e}")
+
+# 🔍 Automatically find the latest log directory
+def get_latest_log_dir(base_dir="logs/image"):
+    if not os.path.exists(base_dir):
+        return None
+    subdirs = [
+        os.path.join(base_dir, d)
+        for d in os.listdir(base_dir)
+        if os.path.isdir(os.path.join(base_dir, d))
+    ]
+    if not subdirs:
+        return base_dir  # fallback to root if no subdirectories
+    latest = max(subdirs, key=os.path.getmtime)
+    return latest
 
 with tab6:
-    st.subheader("📊 TensorBoard Integration")
+    # 🧭 Streamlit UI
+    with st.expander("📊 TensorBoard Integration", expanded=True):
+        log_dir = get_latest_log_dir()
 
-    log_dir = os.path.join("log_file")
-    st.markdown(f"📂 **Log directory:** `{log_dir}`")
-    st.markdown(
-        """
-        TensorBoard is a tool for visualizing training metrics such as loss, accuracy, and model graphs.
-        You need to start it manually in the terminal and open it in your browser:
-        """
-    )
+        if log_dir is None or not os.path.exists(log_dir):
+            st.warning("⚠️ No valid log directory found. Make sure you've trained a model with TensorBoard logging enabled.")
+        else:
+            st.markdown(f"📂 **Log Directory:** `{log_dir}`")
 
-    st.markdown("### 🧭 Start TensorBoard from your terminal:")
-    st.code("tensorboard --logdir logs/image", language="bash")
+            if st.button("🚀 Start TensorBoard"):
+                start_tensorboard(log_dir)
 
-    st.markdown("### 🌐 Or open it directly in your browser:")
-    st.markdown(
-        '[➡️ Open TensorBoard (http://localhost:6006)](http://localhost:6006)',
-        unsafe_allow_html=True
-    )
+            st.markdown("### 🌐 TensorBoard Preview")
+            try:
+                components.iframe("http://localhost:6006", height=800, scrolling=True)
+            except:
+                st.warning("⚠️ Unable to embed TensorBoard. Make sure it's running.")
 
-    st.info("Make sure TensorBoard is running in the background and that the directory `logs/image` exists.")
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")
