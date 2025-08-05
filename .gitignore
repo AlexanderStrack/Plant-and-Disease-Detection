@@ -1,3 +1,17 @@
+# Data folder
+05_data/original_data
+
+
+# Saved models
+.joblib/
+.joblib
+*.npy
+*.keras
+*.h5
+*.hdf5  
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
