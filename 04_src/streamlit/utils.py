@@ -48,6 +48,8 @@ def get_path(key, config=load_config()):
         # advanced model paths
         'model_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['model_name_adv'].format(date=date)),
         'history_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'],config['model_folder'], config['history_name_adv'].format(date=date)),
+        'history_adv_2': os.path.join(_PROJECT_ROOT, config['data_subpath'],config['model_folder'], config['history_name_adv_2'].format(date=date)),
+        
         'layers_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'], config['model_folder'], config['layers_name_adv']),
         'classification_report_adv': os.path.join(_PROJECT_ROOT, config['data_subpath'],config['model_folder'], config['report_name_adv'].format(date=date)),
         

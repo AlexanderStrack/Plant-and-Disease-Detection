@@ -20,11 +20,11 @@ from tensorflow.keras.layers import Conv2D
 import tensorflow as tf
 
 
-st.header("First Model attempt")
+st.header("Advanced Model: Fine-Tuned Pre-trained CNN")
 st.write(
-    "This section is about the first model attempt. "
-    "A simple convolutional neural network (CNN) is built to classify "
-)        
+    "This section details the second modeling approach, which utilizes a fine-tuned, pre-trained "
+    "Convolutional Neural Network (CNN) for plant disease classification."
+)
 
 #model = utils.load_keras_model()
 #if not model:
@@ -33,25 +33,65 @@ train, valid = utils.load_images()
 class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
 train.class_names = [name.replace(' ', '_') for name in class_names]
 
+# Adjusted Tab Headings as per your request
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP", "TensorBoard"])
 
 with tab1:
-    st.subheader("Model Layers (Table View)")
+    st.subheader("Methodology")
+    st.markdown("""
+    The training of this model was conducted in two main stages to effectively leverage the pre-trained MobileNetV2 architecture.
+
+    1.  **Initial Training Phase**:
+        * The base MobileNetV2 model was loaded with its weights frozen, meaning its learned features were not updated initially. 
+        * A new classification "head" was added to the model, consisting of a Global Average Pooling layer, a Dropout layer for regularization, and a Dense output layer with a 'softmax' activation function tailored to the 38 plant disease classes. 
+        * Only this new head was trained for an initial 10 epochs. This allows the new layers to learn how to interpret the features from the frozen base model for our specific dataset.
+
+    2.  **Fine-Tuning Phase**:
+        * After the initial training, the entire base model was made trainable. However, to avoid drastically altering the learned features, only the top layers (from layer 100 onwards) were unfrozen for training.
+        * The model was then re-compiled with a significantly lower learning rate ($1e-5$). 
+        * Training continued for another 10 epochs. This fine-tuning step allows the model to subtly adjust the high-level features of the pre-trained network to better fit the nuances of the plant image data, typically leading to a significant boost in performance.
+
+    The dataset consists of 70,295 training images and 17,572 validation images, distributed across 38 distinct classes. x
+    """)
+
+    st.subheader("MobileNetV2 Architecture")
+    st.markdown("""
+    **History:**
+    MobileNetV2 is a high-performance computer vision model developed by researchers at Google. It was pre-trained on the large-scale ImageNet dataset, which contains millions of labeled images across a thousand categories. The primary goal of the MobileNet family of models is to provide efficient, lightweight deep neural networks that can be deployed on mobile and resource-constrained devices without a major sacrifice in accuracy.
+
+    **Underlying Math:**
+    The core innovation that makes MobileNetV2 so efficient is its use of **depthwise separable convolutions**. A standard convolution applies filters across all input channels simultaneously, which is computationally expensive. In contrast, a depthwise separable convolution breaks this process into two more efficient steps:
+    1.  **Depthwise Convolution**: This first step applies a single, lightweight spatial filter to each input channel independently. It processes the spatial dimensions of the image but does not combine information across different feature channels.
+    2.  **Pointwise Convolution**: The second step uses a 1x1 convolution to create a linear combination of the outputs from the depthwise step. This is where information is mixed across channels, allowing the network to learn feature relationships.
+
+    This two-part factorization drastically reduces both the number of parameters and the required computations compared to a traditional convolutional layer. For a comprehensive technical explanation, please refer to the original research paper: [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/pdf/1706.03059).
+    """)
+
+    st.subheader("Model Layers")
     layer_path = utils.get_path('layers_adv')
     try:
         with open(layer_path, "r") as f:
             layers = json.load(f)
         st.dataframe(pd.DataFrame(layers))
     except FileNotFoundError:
-        st.error(f"Layer file not found: `{layer_path}`")
+        st.error(f"Layer information file not found: `{layer_path}`")
 
-    #st.subheader("Load Model")
-    #st.success("Model loaded successfully.")
 
 with tab2:
-    st.subheader("Training History")
+    st.subheader("Training History Initial Training")
     history_path = utils.get_path('history_adv')
+    try:
+        with open(history_path, "r") as f:
+            history = json.load(f)
+        df_hist = pd.DataFrame(history)
+        st.line_chart(df_hist[["loss", "val_loss"]])
+        st.line_chart(df_hist[["accuracy", "val_accuracy"]])
+    except FileNotFoundError:
+        st.error(f"History file not found: `{history_path}`")
+
+    st.subheader("Training History Fine-Tuning")
+    history_path = utils.get_path('history_adv_2')
     try:
         with open(history_path, "r") as f:
             history = json.load(f)
@@ -112,10 +152,8 @@ with tab3:
 with tab4:
     st.write("Visual explanation of model predictions using Grad-CAM")
 
-    gradcam_path = os.path.normpath(utils.get_path('gradcam_images_adv'))  # e.g., "04_src/images_grad_cam/advanced_model_2025_07_29"
-    #gradcam_path = utils.get_path('gradcam_images')
+    gradcam_path = os.path.normpath(utils.get_path('gradcam_images_adv'))
 
-    # UI
     st.title("Example for Grad-CAM-results for the first model")
 
     available_classes = Code_for_streamlit.get_class_names_from_files(gradcam_path)
@@ -143,7 +181,7 @@ with tab4:
 with tab5:
     st.subheader("SHAP Interpretability")
 
-    shap_path = utils.get_path('shap_images_adv')  # eg.. "04_src/images_shap/first_model_2025_07_29"
+    shap_path = utils.get_path('shap_images_adv')
 
     all_files = [f for f in os.listdir(shap_path) if f.endswith(".png")]
 
@@ -172,7 +210,7 @@ with tab5:
         # Group by img1, img2, ...
         image_groups = {}
         for f in class_files:
-            group_key = f.split("_")[-2]  # z. B. img1, img2
+            group_key = f.split("_")[-2]
             image_groups.setdefault(group_key, []).append(f)
 
         # Display

@@ -19,6 +19,7 @@
     "model_folder": "models",
     "model_name_adv": "Advanced Model/2025_07_31_plant_classifier_fine_tuned_int_phase_model.keras",
     "history_name_adv": "Advanced Model/model_history_int_phase_2025_07_31.json",
+    "history_name_adv_2": "Advanced Model/2025_07_31_model_history_fine_tune_phase.json",
     "layers_name_adv": "Advanced Model/layers.json",
     "report_name_adv": "Advanced_Model_advanced_model_classification_results.pkl",
     "gradcam_images_folder_adv": "04_src/images_grad_cam/advanced_model",
