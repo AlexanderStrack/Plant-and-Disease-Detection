@@ -1,0 +1,44 @@
+[
+  {
+    "name": "input_layer_15",
+    "class": "InputLayer",
+    "params": 0,
+    "output_shape": "(None, 224, 224, 3)",
+    "activation": "n/a"
+  },
+  {
+    "name": "sequential_2",
+    "class": "Sequential",
+    "params": 0,
+    "output_shape": "(None, 224, 224, 3)",
+    "activation": "n/a"
+  },
+  {
+    "name": "mobilenetv2_1.00_224",
+    "class": "Functional",
+    "params": 2257984,
+    "output_shape": "(None, 7, 7, 1280)",
+    "activation": "n/a"
+  },
+  {
+    "name": "global_average_pooling2d_6",
+    "class": "GlobalAveragePooling2D",
+    "params": 0,
+    "output_shape": "(None, 1280)",
+    "activation": "n/a"
+  },
+  {
+    "name": "dropout_6",
+    "class": "Dropout",
+    "params": 0,
+    "output_shape": "(None, 1280)",
+    "activation": "n/a"
+  },
+  {
+    "name": "dense_6",
+    "class": "Dense",
+    "params": 48678,
+    "output_shape": "(None, 38)",
+    "activation": "softmax"
+  }
+]

@@ -176,8 +176,7 @@ cython_debug/
 # VSCode configuration files
 .vscode/
 
-# Data folder
-05_data
+
 
 # Saved models
 .joblib/

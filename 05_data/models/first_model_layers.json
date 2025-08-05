@@ -1,0 +1,58 @@
+[
+  {
+    "name": "input_layer_20",
+    "class": "InputLayer",
+    "params": 0,
+    "output_shape": "(None, 128, 128, 3)",
+    "activation": "n/a"
+  },
+  {
+    "name": "rescaling_20",
+    "class": "Rescaling",
+    "params": 0,
+    "output_shape": "(None, 128, 128, 3)",
+    "activation": "n/a"
+  },
+  {
+    "name": "conv2d_20",
+    "class": "Conv2D",
+    "params": 2432,
+    "output_shape": "(None, 124, 124, 32)",
+    "activation": "relu"
+  },
+  {
+    "name": "max_pooling2d_20",
+    "class": "MaxPooling2D",
+    "params": 0,
+    "output_shape": "(None, 62, 62, 32)",
+    "activation": "n/a"
+  },
+  {
+    "name": "dropout_20",
+    "class": "Dropout",
+    "params": 0,
+    "output_shape": "(None, 62, 62, 32)",
+    "activation": "n/a"
+  },
+  {
+    "name": "flatten_20",
+    "class": "Flatten",
+    "params": 0,
+    "output_shape": "(None, 123008)",
+    "activation": "n/a"
+  },
+  {
+    "name": "dense_40",
+    "class": "Dense",
+    "params": 15745152,
+    "output_shape": "(None, 128)",
+    "activation": "relu"
+  },
+  {
+    "name": "dense_41",
+    "class": "Dense",
+    "params": 4902,
+    "output_shape": "(None, 38)",
+    "activation": "softmax"
+  }
+]
