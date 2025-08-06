@@ -7,7 +7,11 @@ import pickle
 import seaborn as sns
 import glob
 from PIL import Image
+from datetime import datetime
 import os
+import subprocess
+import time
+import streamlit.components.v1 as components
 
 # Corrected Import Order: Import utils first to set up the path
 import utils
@@ -236,28 +240,80 @@ with tab5:
             
 
 
+# 🔧 CONFIG
+BASE_LOG_DIR = "logs/image"
+TENSORBOARD_PORT = 6006
+
+# 🚀 Start TensorBoard
+def start_tensorboard(log_dir, port=TENSORBOARD_PORT):
+    try:
+        command = [
+            "tensorboard",
+            "--logdir", log_dir,
+            "--port", str(port),
+            "--host", "localhost"
+        ]
+        subprocess.Popen(command)
+        time.sleep(3)  # Give TensorBoard time to start
+        st.success("✅ TensorBoard started.")
+    except Exception as e:
+        st.error(f"❌ Failed to start TensorBoard: {e}")
+
+# 🔍 Find all log directories with event files
+def get_all_valid_log_dirs(base_dir=BASE_LOG_DIR):
+    valid_dirs = []
+
+    for root, dirs, files in os.walk(base_dir):
+        for file in files:
+            if file.startswith("events.out.tfevents"):
+                valid_dirs.append(root)
+                break  # Found a valid file in this dir
+
+    return sorted(set(valid_dirs))
+
+# 🧠 Get latest event file info in a directory
+def get_event_file_info(log_dir):
+    for file in os.listdir(log_dir):
+        if file.startswith("events.out.tfevents"):
+            path = os.path.join(log_dir, file)
+            return file, os.path.getmtime(path)
+    return None, None
+
 with tab6:
+    # === STREAMLIT APP ===
     st.subheader("📊 TensorBoard Integration")
 
-    log_dir = os.path.join("log_file")
-    st.markdown(f"📂 **Log directory:** `{log_dir}`")
-    st.markdown(
-        """
-        TensorBoard is a tool for visualizing training metrics such as loss, accuracy, and model graphs.
-        You need to start it manually in the terminal and open it in your browser:
-        """
-    )
+    valid_dirs = get_all_valid_log_dirs()
 
-    st.markdown("### 🧭 Start TensorBoard from your terminal:")
-    st.code("tensorboard --logdir logs/image", language="bash")
+    if not valid_dirs:
+        st.warning("⚠️ No valid TensorBoard log directories found.")
+    else:
+        selected_dir = st.selectbox(
+            "🗂️ Select a log directory",
+            valid_dirs[::-1],  # Show newest first
+            format_func=lambda d: f"{d} ({datetime.fromtimestamp(get_event_file_info(d)[1]).strftime('%Y-%m-%d %H:%M:%S')})"
+        )
 
-    st.markdown("### 🌐 Or open it directly in your browser:")
-    st.markdown(
-        '[➡️ Open TensorBoard (http://localhost:6006)](http://localhost:6006)',
-        unsafe_allow_html=True
-    )
+        st.markdown(f"📂 **Selected directory:** `{selected_dir}`")
 
-    st.info("Make sure TensorBoard is running in the background and that the directory `logs/image` exists.")
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            if st.button("🚀 Start TensorBoard"):
+                start_tensorboard(selected_dir)
+
+        with col2:
+            event_file, file_time = get_event_file_info(selected_dir)
+            if event_file:
+                st.markdown(f"📝 Event file: `{event_file}`")
+                st.markdown(f"🕒 Modified: `{datetime.fromtimestamp(file_time)}`")
+
+        # 🔍 Embed the TensorBoard view
+        st.markdown("---")
+        st.markdown("### 📈 TensorBoard Preview")
+        try:
+            components.iframe(f"http://localhost:{TENSORBOARD_PORT}", height=800, scrolling=True)
+        except:
+            st.warning("⚠️ Could not embed TensorBoard. Make sure it is running.")
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")

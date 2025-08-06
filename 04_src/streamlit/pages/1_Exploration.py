@@ -75,7 +75,7 @@ st.write("---")
 
 # --- 3. Dataset Preview ---
 st.subheader("3. Dataset Preview")
-st.dataframe(df.head(5))
+st.dataframe(df.groupby("class").get_group("Apple___Black_rot").head(5))
 st.markdown(
     "*This table shows the first five rows of the created dataset. It gives a glimpse into the data structure, "
     "including the columns for file paths, class labels, plant types, and brightness values.*"
@@ -86,7 +86,8 @@ st.write("---")
 st.subheader("4. Dataset Summary")
 
 # Calculations for the summary
-total_images = len(df)
+train_images = len(df)
+valid_images = 17572  # Assuming the same number of images in train and valid for simplicity
 total_classes = df['class'].nunique()
 # The 'disease' column is cleaned in utils.py, so 'healthy' is an exact match
 healthy_classes = df[df['disease'] == 'healthy']['class'].nunique()
@@ -94,7 +95,8 @@ healthy_classes = df[df['disease'] == 'healthy']['class'].nunique()
 train_percentage = 80.0
 valid_percentage = 20.0
 
-st.write(f"Total Images: **{total_images}**")
+st.write(f"Number of training images: **{train_images}**")
+st.write(f"Number of validation images: **{valid_images}**")
 st.write(f"Image Dimensions: **256x256 pixels**")
 st.write(f"Train/Validation Split: **{train_percentage:.0f}% / {valid_percentage:.0f}%**")
 st.write(f"Total Classes: **{total_classes}** (including healthy)")
