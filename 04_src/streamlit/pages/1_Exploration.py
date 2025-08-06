@@ -75,7 +75,7 @@ st.write("---")
 
 # --- 3. Dataset Preview ---
 st.subheader("3. Dataset Preview")
-st.dataframe(df.head(5))
+st.dataframe(df.groupby("class").get_group("Apple___Black_rot").head(5))
 st.markdown(
     "*This table shows the first five rows of the created dataset. It gives a glimpse into the data structure, "
     "including the columns for file paths, class labels, plant types, and brightness values.*"
@@ -86,7 +86,8 @@ st.write("---")
 st.subheader("4. Dataset Summary")
 
 # Calculations for the summary
-total_images = len(df)
+train_images = len(df)
+valid_images = 17572  # Assuming the same number of images in train and valid for simplicity
 total_classes = df['class'].nunique()
 # The 'disease' column is cleaned in utils.py, so 'healthy' is an exact match
 healthy_classes = df[df['disease'] == 'healthy']['class'].nunique()
@@ -94,7 +95,8 @@ healthy_classes = df[df['disease'] == 'healthy']['class'].nunique()
 train_percentage = 80.0
 valid_percentage = 20.0
 
-st.write(f"Total Images: **{total_images}**")
+st.write(f"Number of training images: **{train_images}**")
+st.write(f"Number of validation images: **{valid_images}**")
 st.write(f"Image Dimensions: **256x256 pixels**")
 st.write(f"Train/Validation Split: **{train_percentage:.0f}% / {valid_percentage:.0f}%**")
 st.write(f"Total Classes: **{total_classes}** (including healthy)")
@@ -183,33 +185,34 @@ st.write(
     "for the images in the dataset."
 )
 
-# Define thresholds
+df["perceptual_brightness"].value_counts().sort_values(ascending=False)
 too_dark_threshold = 30
 too_bright_threshold = 220
-
-# Prepare data for plotting
 brightness_values = df["perceptual_brightness"].dropna()
 counts, bin_edges = np.histogram(brightness_values, bins=30)
-bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
-# Create plot
+bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+normalized = (
+    bin_centers - bin_centers.min()
+) / (bin_centers.max() - bin_centers.min())
+colors = [(v, v, v) for v in normalized]
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.bar(
     bin_centers,
     counts,
     width=np.diff(bin_edges),
-    color='grey',
+    color=colors,
     edgecolor='black',
     align='center'
 )
 ax.axvline(too_dark_threshold,
            color='red',
            linestyle='--',
-           label=f'Too Dark Threshold ({too_dark_threshold})')
+           label='Too Dark Threshold')
 ax.axvline(too_bright_threshold,
            color='orange',
            linestyle='--',
-           label=f'Too Bright Threshold ({too_bright_threshold})')
+           label='Too Bright Threshold')
 
 ax.set_title("Distribution of Perceptual Brightness", fontsize=16)
 ax.set_xlabel("Perceptual Brightness", fontsize=14)

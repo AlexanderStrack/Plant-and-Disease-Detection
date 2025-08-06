@@ -12,6 +12,7 @@ import subprocess
 import streamlit.components.v1 as components
 import time
 import socket
+from datetime import datetime
 
 # Corrected Import Order: Import utils first to set up the path
 import utils
@@ -200,54 +201,80 @@ with tab5:
                 cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
             
 
-# 🔧 Function to start TensorBoard
-def start_tensorboard(log_dir, port=6006):
-    command = [
-        "tensorboard",
-        "--logdir", log_dir,
-        "--port", str(port),
-        "--host", "localhost"
-    ]
+# 🔧 CONFIG
+BASE_LOG_DIR = "logs/image"
+TENSORBOARD_PORT = 6006
+
+# 🚀 Start TensorBoard
+def start_tensorboard(log_dir, port=TENSORBOARD_PORT):
     try:
-        subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        command = [
+            "tensorboard",
+            "--logdir", log_dir,
+            "--port", str(port),
+            "--host", "localhost"
+        ]
+        subprocess.Popen(command)
         time.sleep(3)  # Give TensorBoard time to start
-        st.success(f"✅ TensorBoard started at http://localhost:{port}")
+        st.success("✅ TensorBoard started.")
     except Exception as e:
         st.error(f"❌ Failed to start TensorBoard: {e}")
 
-# 🔍 Automatically find the latest log directory
-def get_latest_log_dir(base_dir="logs/image"):
-    if not os.path.exists(base_dir):
-        return None
-    subdirs = [
-        os.path.join(base_dir, d)
-        for d in os.listdir(base_dir)
-        if os.path.isdir(os.path.join(base_dir, d))
-    ]
-    if not subdirs:
-        return base_dir  # fallback to root if no subdirectories
-    latest = max(subdirs, key=os.path.getmtime)
-    return latest
+# 🔍 Find all log directories with event files
+def get_all_valid_log_dirs(base_dir=BASE_LOG_DIR):
+    valid_dirs = []
+
+    for root, dirs, files in os.walk(base_dir):
+        for file in files:
+            if file.startswith("events.out.tfevents"):
+                valid_dirs.append(root)
+                break  # Found a valid file in this dir
+
+    return sorted(set(valid_dirs))
+
+# 🧠 Get latest event file info in a directory
+def get_event_file_info(log_dir):
+    for file in os.listdir(log_dir):
+        if file.startswith("events.out.tfevents"):
+            path = os.path.join(log_dir, file)
+            return file, os.path.getmtime(path)
+    return None, None
 
 with tab6:
-    # 🧭 Streamlit UI
-    with st.expander("📊 TensorBoard Integration", expanded=True):
-        log_dir = get_latest_log_dir()
+    # === STREAMLIT APP ===
+    st.subheader("📊 TensorBoard Integration")
 
-        if log_dir is None or not os.path.exists(log_dir):
-            st.warning("⚠️ No valid log directory found. Make sure you've trained a model with TensorBoard logging enabled.")
-        else:
-            st.markdown(f"📂 **Log Directory:** `{log_dir}`")
+    valid_dirs = get_all_valid_log_dirs()
 
+    if not valid_dirs:
+        st.warning("⚠️ No valid TensorBoard log directories found.")
+    else:
+        selected_dir = st.selectbox(
+            "🗂️ Select a log directory",
+            valid_dirs[::-1],  # Show newest first
+            format_func=lambda d: f"{d} ({datetime.fromtimestamp(get_event_file_info(d)[1]).strftime('%Y-%m-%d %H:%M:%S')})"
+        )
+
+        st.markdown(f"📂 **Selected directory:** `{selected_dir}`")
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
             if st.button("🚀 Start TensorBoard"):
-                start_tensorboard(log_dir)
+                start_tensorboard(selected_dir)
 
-            st.markdown("### 🌐 TensorBoard Preview")
-            try:
-                components.iframe("http://localhost:6006", height=800, scrolling=True)
-            except:
-                st.warning("⚠️ Unable to embed TensorBoard. Make sure it's running.")
+        with col2:
+            event_file, file_time = get_event_file_info(selected_dir)
+            if event_file:
+                st.markdown(f"📝 Event file: `{event_file}`")
+                st.markdown(f"🕒 Modified: `{datetime.fromtimestamp(file_time)}`")
 
+        # 🔍 Embed the TensorBoard view
+        st.markdown("---")
+        st.markdown("### 📈 TensorBoard Preview")
+        try:
+            components.iframe(f"http://localhost:{TENSORBOARD_PORT}", height=800, scrolling=True)
+        except:
+            st.warning("⚠️ Could not embed TensorBoard. Make sure it is running.")
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")
