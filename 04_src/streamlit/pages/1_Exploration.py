@@ -185,33 +185,34 @@ st.write(
     "for the images in the dataset."
 )
 
-# Define thresholds
+df["perceptual_brightness"].value_counts().sort_values(ascending=False)
 too_dark_threshold = 30
 too_bright_threshold = 220
-
-# Prepare data for plotting
 brightness_values = df["perceptual_brightness"].dropna()
 counts, bin_edges = np.histogram(brightness_values, bins=30)
-bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
-# Create plot
+bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+normalized = (
+    bin_centers - bin_centers.min()
+) / (bin_centers.max() - bin_centers.min())
+colors = [(v, v, v) for v in normalized]
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.bar(
     bin_centers,
     counts,
     width=np.diff(bin_edges),
-    color='grey',
+    color=colors,
     edgecolor='black',
     align='center'
 )
 ax.axvline(too_dark_threshold,
            color='red',
            linestyle='--',
-           label=f'Too Dark Threshold ({too_dark_threshold})')
+           label='Too Dark Threshold')
 ax.axvline(too_bright_threshold,
            color='orange',
            linestyle='--',
-           label=f'Too Bright Threshold ({too_bright_threshold})')
+           label='Too Bright Threshold')
 
 ax.set_title("Distribution of Perceptual Brightness", fontsize=16)
 ax.set_xlabel("Perceptual Brightness", fontsize=14)
