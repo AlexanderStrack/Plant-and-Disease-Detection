@@ -28,11 +28,7 @@ st.header("First Model attempt")
 st.write(
     "This section is about the first model attempt. "
     "A simple convolutional neural network (CNN) is built to classify "
-)        
-
-#model = utils.load_keras_model()
-#if not model:
-#    st.stop()
+)
 train, valid = utils.load_images()
 class_names = [Code_for_streamlit.clean_label(name) for name in train.class_names]
 train.class_names = [name.replace(' ', '_') for name in class_names]
@@ -60,8 +56,37 @@ with tab2:
         with open(history_path, "r") as f:
             history = json.load(f)
         df_hist = pd.DataFrame(history)
+        st.title("Loss Function")
+        st.write("These function tell us how much the predicted output of the model differs from the actual output."
+                 "For classification problems, the loss function is typically categorical crossentropy"
+                 "(Negative Log Likelihood).")
         st.line_chart(df_hist[["loss", "val_loss"]])
+        st.write(
+            "### 📝 Summary of the Training History Plot\n\n"
+            "- **Training loss** consistently decreases — indicating effective learning.\n"
+            "- **Validation loss** stays relatively flat and fluctuates slightly — no real "
+            "improvement after epoch 1.\n\n"
+            "### ✅ Conclusion\n\n"
+            "The model is learning well on the training set, but its performance on the "
+            "validation set is stagnating. This is a sign of **early overfitting**. "
+            "Consider using **early stopping, regularization**, or **more data "
+            "augmentation** to improve generalization."
+        )
+
+        st.title("Accuracy Function")
+        st.write("These function tell us how well the model is performing on the training and validation sets."
+                 "For classification problems, the accuracy is the percentage of correct predictions.")
         st.line_chart(df_hist[["accuracy", "val_accuracy"]])
+        st.write(
+            "### 📝 Summary of the Accuracy Plot\n\n"
+            "- **Training accuracy** increases steadily and reaches nearly 100%.\n"
+            "- **Validation accuracy** improves initially and then plateaus slightly below "
+            "90%.\n\n"
+            "### ✅ Conclusion\n\n"
+            "The model learns the training data very well, but **validation accuracy lags "
+            "behind**, suggesting possible **overfitting**. Further tuning (e.g., dropout, "
+            "data augmentation, early stopping) may help boost generalization."
+        )
     except FileNotFoundError:
         st.error(f"History file not found: `{history_path}`")
 
@@ -89,7 +114,7 @@ with tab3:
     cm = results['confusion_matrix']
     formatted_class_names = [Code_for_streamlit.format_class_name(name) for name in train.class_names]
     all_keywords = sorted(set(name.split(" ")[0] for name in formatted_class_names))
-    selected_keywords = st.multiselect("Filter Confusion Matrix by plant name:", all_keywords, default=[])
+    selected_keywords = st.multiselect("Filter Confusion Matrix by plant name:", all_keywords, default=["Apple", "Tomato"])
     # Filter logic – find indexes with matching keywords
     if selected_keywords:
         selected_indices = [

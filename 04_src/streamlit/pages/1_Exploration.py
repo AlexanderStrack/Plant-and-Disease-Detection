@@ -1,7 +1,6 @@
 # page_1_exploration.py --- Exploration Page for Streamlit App
 
 import streamlit as st
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -15,8 +14,10 @@ df = utils.load_excel_data()
 # --- 1. Data Folder Structure ---
 st.subheader("1. Data Folder Structure")
 st.write(
-    "The image data is organized in a directory structure where each sub-folder represents a specific class (a plant-disease combination). "
-    "This is a common and effective way to structure data for image classification tasks."
+    "The image data is organized in a directory structure where each "
+    "sub-folder represents a specific class (a plant-disease combination). "
+    "This is a common and effective way to structure data for image "
+    "classification tasks."
 )
 folder_structure = """
 original_data/
@@ -39,8 +40,10 @@ original_data/
 """
 st.code(folder_structure, language='text')
 st.markdown(
-    "*This text-based tree illustrates how the training and validation images are separated and how each class has its own dedicated folder. "
-    "The model learns to associate the images in each folder with the folder's name, which serves as the class label.*"
+    "*This text-based tree illustrates how the training and validation images "
+    "are separated and how each class has its own dedicated folder. The model "
+    "learns to associate the images in each folder with the folder's name, "
+    "which serves as the class label.*"
 )
 st.write("---")
 
@@ -48,26 +51,38 @@ st.write("---")
 # --- 2. File Naming Convention ---
 st.subheader("2. File Naming Convention")
 st.write(
-    "The filenames in the dataset contain encoded information about the image's origin and any augmentations applied."
+    "The filenames in the dataset contain encoded information about the "
+    "image's origin and any augmentations applied."
 )
-naming_convention_html = """
-<div style="font-size: 1.1em;">
-    <strong>Theory</strong>
-</div>
-<div style="background-color:#f0f2f6; padding: 10px; border-radius: 5px; font-family: monospace; margin-top: 5px;">
-    <span style='color:#E69138'>&lt;uuid&gt;</span>___<span style='color:#6AA84F'>&lt;source_code&gt;</span>_<span style='color:#A64D79'>&lt;image_id&gt;</span>_<span style='color:#CC0000'>&lt;augmentation&gt;</span>.JPG
-</div>
-<br>
-<div style="font-size: 1.1em;">
-    <strong>Example</strong>
-</div>
-<div style="background-color:#f0f2f6; padding: 10px; border-radius: 5px; font-family: monospace; margin-top: 5px;">
-    <span style='color:#E69138'>0b8dabb7-5f1b-4fdc-b3fa-30b289707b90</span>___<span style='color:#6AA84F'>JR_FrgE.S</span>_<span style='color:#A64D79'>3047</span>_<span style='color:#CC0000'>270deg</span>.JPG
-</div>
-"""
+naming_convention_html = (
+    "<div style=\"font-size: 1.1em;\">\n"
+    "    <strong>Theory</strong>\n"
+    "</div>\n"
+    "<div style=\"background-color:#f0f2f6; padding: 10px; border-radius: 5px;"
+    "font-family: monospace; margin-top: 5px;\">\n"
+    "    <span style='color:#E69138'>&lt;uuid&gt;</span>___"
+    "<span style='color:#6AA84F'>&lt;source_code&gt;</span>_"
+    "<span style='color:#A64D79'>&lt;image_id&gt;</span>_"
+    "<span style='color:#CC0000'>&lt;augmentation&gt;</span>.JPG\n"
+    "</div>\n"
+    "<br>\n"
+    "<div style=\"font-size: 1.1em;\">\n"
+    "    <strong>Example</strong>\n"
+    "</div>\n"
+    "<div style=\"background-color:#f0f2f6; padding: 10px; border-radius: 5px;"
+    "font-family: monospace; margin-top: 5px;\">\n"
+    "<span style='color:#E69138'>0370bc9b-c0c8-49b5-b999-c44323c45216</span>___"
+    "<span style='color:#6AA84F'>RS_HL</span>_"
+    "<span style='color:#A64D79'>2202</span>_"
+    "<span style='color:#CC0000'>90deg</span>.JPG\n"
+    "</div>\n"
+)
 st.markdown(naming_convention_html, unsafe_allow_html=True)
+
 st.markdown(
-    "*This convention shows that each filename is composed of a unique identifier (uuid), a source code, an image ID, and details about any data augmentation (like rotation) performed. "
+    "*This convention shows that each filename is composed of a unique"
+    "identifier (uuid), a source code, an image ID, and details about"
+    "any data augmentation (like rotation) performed. "
     "While not used for training, this metadata is valuable for traceability.*"
 )
 st.write("---")
@@ -75,10 +90,11 @@ st.write("---")
 
 # --- 3. Dataset Preview ---
 st.subheader("3. Dataset Preview")
-st.dataframe(df.groupby("class").get_group("Apple___Black_rot").head(5))
+st.dataframe(df.head(5))
 st.markdown(
-    "*This table shows the first five rows of the created dataset. It gives a glimpse into the data structure, "
-    "including the columns for file paths, class labels, plant types, and brightness values.*"
+    "*This table shows the first five rows of the created dataset. It"
+    "gives a glimpse into the data structure, including the columns"
+    "for file paths, class labels, plant types, and brightness values.*"
 )
 st.write("---")
 
@@ -87,7 +103,7 @@ st.subheader("4. Dataset Summary")
 
 # Calculations for the summary
 train_images = len(df)
-valid_images = 17572  # Assuming the same number of images in train and valid for simplicity
+valid_images = 17572  # Assuming the same number of images in valid dataset
 total_classes = df['class'].nunique()
 # The 'disease' column is cleaned in utils.py, so 'healthy' is an exact match
 healthy_classes = df[df['disease'] == 'healthy']['class'].nunique()
