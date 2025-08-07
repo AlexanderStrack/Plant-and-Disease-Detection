@@ -17,9 +17,18 @@ st.markdown("---")
 st.header("Executive Summary")
 
 st.markdown("""
-This application presents a powerful tool for **plant disease recognition using deep learning**. It allows users to explore a rich dataset of plant images, visualize the data distribution, and interact with trained machine learning models to understand their predictions.
+This application is a powerful tool for **plant disease recognition using deep learning**. It allows users to explore the image dataset, visualize data distributions, and interact with the trained model to understand its predictions.
+""")
 
-The core of this project is a classification model that can accurately identify various diseases across different plant species from images. The application provides a comprehensive journey, starting from initial data exploration and visualization, moving through the training and evaluation of different models, and culminating in the interpretation of the model's decisions through techniques like Grad-CAM. This interactive platform serves as a demonstration of a complete machine learning workflow, from data to deployment and interpretation, aimed at solving real-world agricultural challenges.
+st.markdown("""
+**Project Goal:** To develop a robust deep learning model that accurately identifies various plant types and diseases from images.
+
+**Methods:** The process covers the complete machine learning workflow:
+* Data Exploration and Visualization
+* Model Training and Evaluation
+* Interpreting Predictions with Grad-CAM and SHAP
+
+**Application:** This interactive platform demonstrates an end-to-end ML workflow—from data to deployment—designed to address real-world challenges in agriculture.
 """)
 
 # --- About the Data Section ---
