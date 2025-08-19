@@ -129,7 +129,7 @@ with tab3:
     cm = results['confusion_matrix']
     formatted_class_names = [Code_for_streamlit.format_class_name(name) for name in train.class_names]
     all_keywords = sorted(set(name.split(" ")[0] for name in formatted_class_names))
-    selected_keywords = st.multiselect("Filter Confusion Matrix by plant name:", all_keywords, default=[])
+    selected_keywords = st.multiselect("Filter Confusion Matrix by plant name:", all_keywords, default=["Apple", "Tomato"])
     # Filter logic – find indexes with matching keywords
     if selected_keywords:
         selected_indices = [

@@ -111,6 +111,11 @@ with tab3:
 
 
     st.subheader("Confusion Matrix")
+    st.markdown("""
+    The **Confusion Matrix** below provides a comprehensive view of our model's classification 
+    performance across different plant species. Each cell shows the proportion of predictions 
+    for each true class, helping identify where the model excels and where it struggles.
+    """)
     cm = results['confusion_matrix']
     formatted_class_names = [Code_for_streamlit.format_class_name(name) for name in train.class_names]
     all_keywords = sorted(set(name.split(" ")[0] for name in formatted_class_names))
@@ -137,12 +142,37 @@ with tab3:
     ax.set_title("Filtered Confusion Matrix")
     st.pyplot(fig)
 
+    st.markdown("---")
+    
+    st.subheader("📖 How to Read the Confusion Matrix")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        **📍 Matrix Structure:**
+        - **Rows (Y-axis)**: True Labels (actual plant species)
+        - **Columns (X-axis)**: Predicted Labels (model predictions)
+        - **Diagonal values**: Correct classifications
+        - **Off-diagonal values**: Misclassifications
+        """)
+    
+    with col2:
+        st.markdown("""
+        **🎨 Color Interpretation:**
+        - **Dark Blue**: High values (0.8-1.0) - Strong performance
+        - **Medium Blue**: Moderate values (0.4-0.7) - Average performance  
+        - **Light Blue**: Low values (0.0-0.3) - Weak performance
+        - **White/Near White**: Zero or minimal values
+        """)
+    
+
 
 with tab4:
     st.write("Visual explanation of model predictions using Grad-CAM")
 
     gradcam_path = os.path.normpath(utils.get_path('gradcam_images'))
-    #gradcam_path = utils.get_path('gradcam_images')
+    
 
     # UI
     st.title("Example for Grad-CAM-results for the first model")
@@ -168,6 +198,63 @@ with tab4:
                     st.image(Image.open(img_path), caption=f"Example {i+1}", use_column_width=True)
         else:
             st.info("No Grad-CAM images found for this class.")
+
+    st.markdown("---")
+    
+    st.subheader("🎯 What These Visualizations Tell Us")
+    
+    # Key insights section
+    st.markdown("""
+    ### **Color Interpretation:**
+    - **Bright/Warm colors (Blue/Cyan)**: High model attention - these regions are crucial for the prediction
+    - **Dark/Cool colors (Purple/Black)**: Low model attention - these areas have minimal impact on classification
+    - **Intensity**: The brighter the color, the more important that region is for the model's decision
+    """)
+    
+    st.markdown("""
+    ### **Model Behavior Analysis:**
+    
+    **✅ Positive Indicators:**
+    - The model focuses on **relevant biological features** (leaf structure, veins, edges)
+    - **Consistent attention patterns** across similar samples
+    - **Sharp boundaries** between important and unimportant regions
+    - No focus on background noise or irrelevant elements
+    
+    **⚠️ Potential Concerns to Watch For:**
+    - Model focusing on background elements instead of the main subject
+    - Inconsistent attention patterns for similar images
+    - Attention scattered across irrelevant image regions
+    """)
+    
+    st.markdown("""
+    ### **What We Can Conclude:**
+    
+    🔬 **Biological Relevance**: The model correctly identifies botanically important features like:
+    - Leaf morphology and shape characteristics
+    - Vein patterns and structural details
+    - Texture and surface features
+    
+    🎯 **Model Quality**: These visualizations suggest our model has learned to:
+    - Distinguish between relevant and irrelevant image regions
+    - Focus on discriminative features for plant classification
+    - Ignore background distractions
+    
+    📊 **Trust & Interpretability**: The clear focus on leaf structures increases confidence in the model's decisions
+    """)
+    
+    st.info("""
+    💡 **Key Takeaway**: These Grad-CAM visualizations demonstrate that our model has successfully 
+    learned to identify and focus on the most relevant botanical features for accurate plant classification, 
+    rather than relying on spurious correlations or background elements.
+    """)
+    
+    st.markdown("""
+    ### **Technical Notes:**
+    - Grad-CAM works by using gradients flowing into the final convolutional layer
+    - The technique is class-specific: different classes may show different attention patterns
+    - These visualizations help validate that the model's reasoning aligns with human expertise
+    """)
+
 
 with tab5:
     st.subheader("SHAP Interpretability")
@@ -224,7 +311,72 @@ with tab5:
                 cols[1].image(original_img, caption=f"🖼️ Originalbild {group_id[-1]}", use_column_width=True)
             if overlay_img:
                 cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
-            
+    
+    st.markdown("---")
+    
+    st.subheader("🎨 Understanding SHAP Color Coding")
+    
+    # Color interpretation with visual indicators
+    col_red, col_blue, col_neutral = st.columns(3)
+    
+    with col_red:
+        st.markdown("""
+        🔴 **Red Regions**
+        - **Positive contribution** to the predicted class
+        - These pixels **increase** the model's confidence
+        - **Support** the final classification decision
+        """)
+    
+    with col_blue:
+        st.markdown("""
+        🔵 **Blue Regions**  
+        - **Negative contribution** to the predicted class
+        - These pixels **decrease** the model's confidence
+        - **Oppose** the final classification decision
+        """)
+    
+    with col_neutral:
+        st.markdown("""
+        ⚪ **Neutral/Green Areas**
+        - **Minimal contribution** (near zero)
+        - Neither support nor oppose the prediction
+        - **Background** or less relevant features
+        """)
+    
+    st.markdown("---")
+    
+    st.subheader("📊 What This SHAP Analysis Reveals")
+    
+    st.markdown("""
+    ### **Pixel-Level Insights:**
+    
+    **🔍 Detailed Attribution:**
+    - **Every pixel** receives a contribution score (positive, negative, or neutral)
+    - **Quantitative measure** of each pixel's importance to the final prediction
+    - **Additive property**: All pixel contributions sum to the difference between baseline and current prediction
+    
+    **🌱 Biological Feature Analysis:**
+    - **Leaf texture patterns**: Red areas likely indicate important surface characteristics
+    - **Edge definitions**: Sharp boundaries between leaf and background
+    - **Vein structures**: Linear patterns that help distinguish plant species
+    - **Color variations**: Natural pigmentation that aids classification
+    """)
+    
+    st.markdown("""
+    ### **Model Interpretation:**
+    
+    **✅ Positive Indicators in This Example:**
+    - Strong red regions on **central leaf areas** (positive contribution)
+    - Blue regions primarily on **background/edges** (correctly identified as less relevant)
+    - **Concentrated attribution** on botanically meaningful features
+    - **Minimal scattered noise** in attribution patterns
+    
+    **🎯 Classification Confidence:**
+    - **High-contrast attribution** suggests confident prediction
+    - **Localized red regions** indicate specific discriminative features
+    - **Clean separation** between positive and negative contributions
+    """)
+    
 
 
 # --- Sidebar Configuration ---
