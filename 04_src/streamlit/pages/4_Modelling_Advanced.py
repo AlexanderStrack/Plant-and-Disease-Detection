@@ -38,8 +38,8 @@ class_names = [Code_for_streamlit.clean_label(name) for name in train.class_name
 train.class_names = [name.replace(' ', '_') for name in class_names]
 
 # Adjusted Tab Headings as per your request
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP", "TensorBoard"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP"])
 
 with tab1:
     st.subheader("Methodology")
@@ -239,7 +239,7 @@ with tab5:
                 cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
             
 
-
+"""
 # 🔧 CONFIG
 BASE_LOG_DIR = "logs/image"
 TENSORBOARD_PORT = 6006
@@ -314,6 +314,8 @@ with tab6:
             components.iframe(f"http://localhost:{TENSORBOARD_PORT}", height=800, scrolling=True)
         except:
             st.warning("⚠️ Could not embed TensorBoard. Make sure it is running.")
+
+"""
 
 # --- Sidebar Configuration ---
 st.sidebar.title("Table of Contents")
