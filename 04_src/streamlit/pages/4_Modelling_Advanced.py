@@ -162,14 +162,15 @@ with tab4:
 
     available_classes = Code_for_streamlit.get_class_names_from_files(gradcam_path)
     display_to_raw = Code_for_streamlit.get_class_names_from_files(gradcam_path)
+    filtered_dict = {k.replace(" grad cam", ""): v for k, v in display_to_raw.items() if "original" not in k.lower()} # delete original images and "grad cam" from name
 
     if not available_classes:
         st.warning("No Grad-CAM-Images found.")
     else:
-        selected_display_name = st.selectbox("Choose a plant class:", list(display_to_raw.keys()))
-        selected_class = display_to_raw[selected_display_name]
+        selected_display_name = st.selectbox("Choose a plant class:", list(filtered_dict.keys()))
+        selected_class = filtered_dict[selected_display_name]
 
-        image_paths = Code_for_streamlit.get_images_for_class(selected_class,gradcam_path)
+        image_paths = Code_for_streamlit.get_images_for_class_png(selected_class,gradcam_path)
 
         # Show images
         if image_paths:

@@ -116,12 +116,16 @@ def format_class_name(label):
 # Find all available classes (extract once from filename)
 @st.cache_data
 def get_class_names_from_files(gradcam_path):
-    all_files = glob.glob(os.path.join(gradcam_path, "*.jpg"))
+    # Collect both JPG and PNG files
+    jpg_files = glob.glob(os.path.join(gradcam_path, "*.jpg"))
+    png_files = glob.glob(os.path.join(gradcam_path, "*.png"))
+    all_files = jpg_files + png_files
+    
     raw_names = sorted(set(
         os.path.basename(f).rsplit("_img", 1)[0] for f in all_files
     ))
-
-    # formate: from "Apple___Apple_scab" → "Apple (Apple scab)"
+    
+    # Format: from "Apple___Apple_scab" → "Apple (Apple scab)"
     display_to_raw = {}
     for raw in raw_names:
         if "___" in raw:
@@ -130,11 +134,19 @@ def get_class_names_from_files(gradcam_path):
         else:
             pretty = raw.replace("_", " ")  # fallback
         display_to_raw[pretty] = raw
-
+    
     return display_to_raw  # dict: Display → internal file name
+
 
 # Load image paths for specific class
 def get_images_for_class(class_name,gradcam_path):
     pattern = os.path.join(gradcam_path, f"{class_name}_img*.jpg")
     return sorted(glob.glob(pattern))[:2]
+
+
+# Load image paths for specific class
+def get_images_for_class_png(class_name,gradcam_path):
+    pattern = os.path.join(gradcam_path, f"{class_name}_img*.png")
+    return sorted(glob.glob(pattern))[:2]
+
 

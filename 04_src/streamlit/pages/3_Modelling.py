@@ -179,7 +179,6 @@ with tab4:
 
     available_classes = Code_for_streamlit.get_class_names_from_files(gradcam_path)
     display_to_raw = Code_for_streamlit.get_class_names_from_files(gradcam_path)
-
     if not available_classes:
         st.warning("No Grad-CAM-Images found.")
     else:
