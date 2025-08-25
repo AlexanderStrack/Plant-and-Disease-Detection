@@ -307,7 +307,7 @@ with tab5:
 
             # Display in adjacent columns
             if original_img:
-                cols[1].image(original_img, caption=f" Originalbild {group_id[-1]}", use_column_width=True)
+                cols[1].image(original_img, caption=f" Original Image {group_id[-1]}", use_column_width=True)
             if overlay_img:
                 cols[0].image(overlay_img, caption=f" SHAP-Overlay {group_id[-1]}", use_column_width=True)
     
