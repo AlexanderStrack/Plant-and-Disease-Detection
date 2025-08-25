@@ -39,8 +39,8 @@ streamlit>=1.28.0
 shap>=0.44.0
 
 # Model Export
-#onnx==1.15.0
-#onnxruntime==1.15.1
+onnx==1.15.0
+onnxruntime==1.15.1
 
 # Env Handling
 python-dotenv>=1.0.0
