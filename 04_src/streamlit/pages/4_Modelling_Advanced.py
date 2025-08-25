@@ -219,7 +219,7 @@ with tab4:
 
         # Show images
         if image_paths:
-            class_nice = selected_class.replace("___", " (").replace("_", " ") + ")"
+            class_nice = selected_class.replace("___", " (").replace("_", " ").replace("grad cam","") + ")"
             st.subheader(f"Grad-CAM for: {class_nice}")
             cols = st.columns(len(image_paths))
             for i, img_path in enumerate(image_paths):
