@@ -24,7 +24,7 @@ import shap
 from tensorflow.keras.layers import Conv2D
 import tensorflow as tf
 
-st.header("First Model attempt")
+st.header("First Model Attempt")
 st.write(
     "This section is about the first model attempt. "
     "A simple convolutional neural network (CNN) is built to classify "
@@ -37,7 +37,7 @@ tab1, tab2, tab3, tab4, tab5= st.tabs([
     "Model Structure", "Training History", "Evaluation", "Grad-CAM", "SHAP"])
 
 with tab1:
-    st.subheader("Model Layers (Table View)")
+    st.subheader("1. Model Layers (Table View)")
     layer_path = utils.get_path('layers')
     try:
         with open(layer_path, "r") as f:
@@ -50,7 +50,7 @@ with tab1:
     #st.success("Model loaded successfully.")
 
 with tab2:
-    st.subheader("Training History")
+    st.subheader("2. Training History")
     history_path = utils.get_path('history')
     try:
         with open(history_path, "r") as f:
@@ -92,7 +92,7 @@ with tab2:
 
 with tab3:
 
-    st.subheader("Evaluation on Validation Set")
+    st.subheader("3. Evaluation on Validation Set")
     classification_report_path = utils.get_path('classification_report')
     try:
         with open(classification_report_path, "rb") as f:
@@ -175,7 +175,7 @@ with tab4:
     
 
     # UI
-    st.title("Example for Grad-CAM-results for the first model")
+    st.title("4. Example for Grad-CAM-results for the first model")
 
     available_classes = Code_for_streamlit.get_class_names_from_files(gradcam_path)
     display_to_raw = Code_for_streamlit.get_class_names_from_files(gradcam_path)
@@ -205,8 +205,8 @@ with tab4:
     # Key insights section
     st.markdown("""
     ### **Color Interpretation:**
-    - **Bright/Warm colors (Blue/Cyan)**: High model attention - these regions are crucial for the prediction
-    - **Dark/Cool colors (Purple/Black)**: Low model attention - these areas have minimal impact on classification
+    - **Bright/Warm colors **: High model attention - these regions are crucial for the prediction
+    - **Dark/Cool colors **: Low model attention - these areas have minimal impact on classification
     - **Intensity**: The brighter the color, the more important that region is for the model's decision
     """)
     
@@ -256,7 +256,7 @@ with tab4:
 
 
 with tab5:
-    st.subheader("SHAP Interpretability")
+    st.subheader("5. SHAP Interpretability")
 
     shap_path = utils.get_path('shap_images')  # eg.. "04_src/images_shap/first_model_2025_07_29"
 

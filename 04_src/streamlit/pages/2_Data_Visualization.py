@@ -8,7 +8,7 @@ import utils
 import Code_for_streamlit
 
 st.header("Data Visualization")
-st.write("### 1. Presentation of data")
+st.write("### 1. Loading of Data")
 
 train, valid = utils.load_images()
 
@@ -17,7 +17,7 @@ train.class_names = [name.replace(' ', '_') for name in class_names]
 
 if train:
     st.success("Trainings- and validationdata successfully loaded!")
-    st.subheader("2 Example images from the training dataset")
+    st.subheader("2. Example Images From the Training Dataset")
     st.write(
         "Here are some example images from the training dataset. "
         "The images are displayed along with their corresponding labels."
@@ -39,7 +39,7 @@ for i in range(5):
     axes[i].axis("off")
 st.pyplot(fig)
 
-st.subheader("3. Discover the different plant species")
+st.subheader("3. Discover the Different Plant Species")
 
 plant_options = sorted(set(name.split('___')[0].strip() for name in train.class_names))
 plant_select = st.selectbox("Pick a Plant Species", options=plant_options, key='plant_species_checkbox')
