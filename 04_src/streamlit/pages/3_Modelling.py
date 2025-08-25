@@ -62,11 +62,11 @@ with tab2:
                  "(Negative Log Likelihood).")
         st.line_chart(df_hist[["loss", "val_loss"]])
         st.write(
-            "### 📝 Summary of the Training History Plot\n\n"
+            "###  Summary of the Training History Plot\n\n"
             "- **Training loss** consistently decreases — indicating effective learning.\n"
             "- **Validation loss** stays relatively flat and fluctuates slightly — no real "
             "improvement after epoch 1.\n\n"
-            "### ✅ Conclusion\n\n"
+            "###  Conclusion\n\n"
             "The model is learning well on the training set, but its performance on the "
             "validation set is stagnating. This is a sign of **early overfitting**. "
             "Consider using **early stopping, regularization**, or **more data "
@@ -78,11 +78,11 @@ with tab2:
                  "For classification problems, the accuracy is the percentage of correct predictions.")
         st.line_chart(df_hist[["accuracy", "val_accuracy"]])
         st.write(
-            "### 📝 Summary of the Accuracy Plot\n\n"
+            "###  Summary of the Accuracy Plot\n\n"
             "- **Training accuracy** increases steadily and reaches nearly 100%.\n"
             "- **Validation accuracy** improves initially and then plateaus slightly below "
             "90%.\n\n"
-            "### ✅ Conclusion\n\n"
+            "###  Conclusion\n\n"
             "The model learns the training data very well, but **validation accuracy lags "
             "behind**, suggesting possible **overfitting**. Further tuning (e.g., dropout, "
             "data augmentation, early stopping) may help boost generalization."
@@ -144,13 +144,13 @@ with tab3:
 
     st.markdown("---")
     
-    st.subheader("📖 How to Read the Confusion Matrix")
+    st.subheader(" How to Read the Confusion Matrix")
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
-        **📍 Matrix Structure:**
+         Matrix Structure:
         - **Rows (Y-axis)**: True Labels (actual plant species)
         - **Columns (X-axis)**: Predicted Labels (model predictions)
         - **Diagonal values**: Correct classifications
@@ -159,7 +159,7 @@ with tab3:
     
     with col2:
         st.markdown("""
-        **🎨 Color Interpretation:**
+         Color Interpretation:
         - **Dark Blue**: High values (0.8-1.0) - Strong performance
         - **Medium Blue**: Moderate values (0.4-0.7) - Average performance  
         - **Light Blue**: Low values (0.0-0.3) - Weak performance
@@ -200,7 +200,7 @@ with tab4:
 
     st.markdown("---")
     
-    st.subheader("🎯 What These Visualizations Tell Us")
+    st.subheader(" What These Visualizations Tell Us")
     
     # Key insights section
     st.markdown("""
@@ -213,13 +213,13 @@ with tab4:
     st.markdown("""
     ### **Model Behavior Analysis:**
     
-    **✅ Positive Indicators:**
+     Positive Indicators:
     - The model focuses on **relevant biological features** (leaf structure, veins, edges)
     - **Consistent attention patterns** across similar samples
     - **Sharp boundaries** between important and unimportant regions
     - No focus on background noise or irrelevant elements
     
-    **⚠️ Potential Concerns to Watch For:**
+     Potential Concerns to Watch For:
     - Model focusing on background elements instead of the main subject
     - Inconsistent attention patterns for similar images
     - Attention scattered across irrelevant image regions
@@ -228,21 +228,21 @@ with tab4:
     st.markdown("""
     ### **What We Can Conclude:**
     
-    🔬 **Biological Relevance**: The model correctly identifies botanically important features like:
+     **Biological Relevance**: The model correctly identifies botanically important features like:
     - Leaf morphology and shape characteristics
     - Vein patterns and structural details
     - Texture and surface features
     
-    🎯 **Model Quality**: These visualizations suggest our model has learned to:
+     **Model Quality**: These visualizations suggest our model has learned to:
     - Distinguish between relevant and irrelevant image regions
     - Focus on discriminative features for plant classification
     - Ignore background distractions
     
-    📊 **Trust & Interpretability**: The clear focus on leaf structures increases confidence in the model's decisions
+     **Trust & Interpretability**: The clear focus on leaf structures increases confidence in the model's decisions
     """)
     
     st.info("""
-    💡 **Key Takeaway**: These Grad-CAM visualizations demonstrate that our model has successfully 
+     **Key Takeaway**: These Grad-CAM visualizations demonstrate that our model has successfully 
     learned to identify and focus on the most relevant botanical features for accurate plant classification, 
     rather than relying on spurious correlations or background elements.
     """)
@@ -307,20 +307,20 @@ with tab5:
 
             # Display in adjacent columns
             if original_img:
-                cols[1].image(original_img, caption=f"🖼️ Originalbild {group_id[-1]}", use_column_width=True)
+                cols[1].image(original_img, caption=f" Originalbild {group_id[-1]}", use_column_width=True)
             if overlay_img:
-                cols[0].image(overlay_img, caption=f"🔶 SHAP-Overlay {group_id[-1]}", use_column_width=True)
+                cols[0].image(overlay_img, caption=f" SHAP-Overlay {group_id[-1]}", use_column_width=True)
     
     st.markdown("---")
     
-    st.subheader("🎨 Understanding SHAP Color Coding")
+    st.subheader(" Understanding SHAP Color Coding")
     
     # Color interpretation with visual indicators
     col_red, col_blue, col_neutral = st.columns(3)
     
     with col_red:
         st.markdown("""
-        🔴 **Red Regions**
+         **Red Regions**
         - **Positive contribution** to the predicted class
         - These pixels **increase** the model's confidence
         - **Support** the final classification decision
@@ -328,7 +328,7 @@ with tab5:
     
     with col_blue:
         st.markdown("""
-        🔵 **Blue Regions**  
+         **Blue Regions**  
         - **Negative contribution** to the predicted class
         - These pixels **decrease** the model's confidence
         - **Oppose** the final classification decision
@@ -336,7 +336,7 @@ with tab5:
     
     with col_neutral:
         st.markdown("""
-        ⚪ **Neutral/Green Areas**
+         **Neutral/Green Areas**
         - **Minimal contribution** (near zero)
         - Neither support nor oppose the prediction
         - **Background** or less relevant features
@@ -344,17 +344,17 @@ with tab5:
     
     st.markdown("---")
     
-    st.subheader("📊 What This SHAP Analysis Reveals")
+    st.subheader(" What This SHAP Analysis Reveals")
     
     st.markdown("""
     ### **Pixel-Level Insights:**
     
-    **🔍 Detailed Attribution:**
+     Detailed Attribution:
     - **Every pixel** receives a contribution score (positive, negative, or neutral)
     - **Quantitative measure** of each pixel's importance to the final prediction
     - **Additive property**: All pixel contributions sum to the difference between baseline and current prediction
     
-    **🌱 Biological Feature Analysis:**
+     Biological Feature Analysis:
     - **Leaf texture patterns**: Red areas likely indicate important surface characteristics
     - **Edge definitions**: Sharp boundaries between leaf and background
     - **Vein structures**: Linear patterns that help distinguish plant species
@@ -364,13 +364,13 @@ with tab5:
     st.markdown("""
     ### **Model Interpretation:**
     
-    **✅ Positive Indicators in This Example:**
+     Positive Indicators in This Example:
     - Strong red regions on **central leaf areas** (positive contribution)
     - Blue regions primarily on **background/edges** (correctly identified as less relevant)
     - **Concentrated attribution** on botanically meaningful features
     - **Minimal scattered noise** in attribution patterns
     
-    **🎯 Classification Confidence:**
+     Classification Confidence:
     - **High-contrast attribution** suggests confident prediction
     - **Localized red regions** indicate specific discriminative features
     - **Clean separation** between positive and negative contributions
