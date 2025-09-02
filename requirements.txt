@@ -12,12 +12,13 @@ matplotlib==3.10.3
 seaborn==0.13.2
 plotly>=5.17.0
 openpyxl==3.1.2
+#python==3.10
 
 
 # ML Frameworks
-torch==2.1.2
-torchvision==0.16.2
-tensorflow==2.19.0
+#torch==2.1.2
+#torchvision==0.16.2
+tensorflow==2.15.0
 xgboost>=1.7.4
 
 

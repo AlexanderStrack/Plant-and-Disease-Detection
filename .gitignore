@@ -1,6 +1,6 @@
 # Data folder
-05_data/original_data
-
+#05_data/original_data
+#!05_data/original_data/2.1.1 New Plant Diseases/train/
 
 # Saved models
 .joblib/
